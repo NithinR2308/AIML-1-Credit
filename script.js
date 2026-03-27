@@ -131,22 +131,53 @@ function showNotification(message, type) {
     }, 3000);
 }
 
-// ========== Smooth Scroll for Navigation ==========
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-        if (href !== '#') {
-            e.preventDefault();
-            const target = document.querySelector(href);
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }
+// ========== Custom Cursor Animation ==========
+const cursor = document.querySelector('.cursor');
+
+if (cursor) {
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+
+    // Smooth following with easing
+    function updateCursor() {
+        cursorX += (mouseX - cursorX) * 0.1;
+        cursorY += (mouseY - cursorY) * 0.1;
+        
+        cursor.style.left = cursorX + 'px';
+        cursor.style.top = cursorY + 'px';
+        
+        requestAnimationFrame(updateCursor);
+    }
+    updateCursor();
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
     });
-});
+
+    // Click animation
+    document.addEventListener('mousedown', () => {
+        cursor.classList.add('clicked');
+    });
+
+    document.addEventListener('mouseup', () => {
+        cursor.classList.remove('clicked');
+    });
+
+    // Add hover effects for interactive elements
+    const interactiveElements = document.querySelectorAll('a, button, .btn, .social-icon, .project-card, .skill-card, .design-card');
+
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.transform = 'scale(1.5)';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.style.transform = 'scale(1)';
+        });
+    });
+}
 
 // ========== Button Hover Effects ==========
 const buttons = document.querySelectorAll('.btn');
